@@ -5,7 +5,7 @@ const socket = io();
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
 // ── Connection state ──
 let pc = null; // RTCPeerConnection object
-let myRoom = null; // Current room code shared between 2 peers
+window.myRoom = null; // Shared with script.js via window scope // Current room code shared between 2 peers
 let dataChannel = null; // DataChannel pipe for file transfer
 
 // ── Receive state (Hybrid Direct-to-Disk + RAM Fallback) ──
@@ -51,7 +51,8 @@ socket.on("ready", async () => {
 socket.on("offer", async (offer) => {
   if (pc) return; // ignore if already connected
   pc = createPC();
-  myRoom = $("my-code").textContent;
+  // BUG FIX: Do NOT overwrite myRoom with our own display code.
+  // myRoom was already set correctly when we joined the room.
   pc.ondatachannel = (e) => {
     // Peer B receives the DataChannel Peer A created
     dataChannel = e.channel;
@@ -547,12 +548,15 @@ function updateReceiveProgress(pct, received, total) {
   $("prog-sub").textContent = pct < 100 ? "Receiving…" : "Done!";
 }
 
-// Auto joins room after page loads to ensure UI is ready
+// BUG FIX: Each peer auto-joins their OWN room code on load so they can be found.
+// Peer B then joins Peer A's room via doConnect() → joinRoom().
+// The server fires "ready" when 2 peers share a room.
 document.addEventListener("DOMContentLoaded", () => {
   setTimeout(() => {
     const myCode = $("my-code").textContent;
     if (myCode && myCode !== "—") {
+      window.myRoom = myCode;
       socket.emit("join-room", myCode);
     }
-  }, 1000);
+  }, 500);
 });

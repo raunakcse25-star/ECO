@@ -12,8 +12,17 @@ const app = express();
 const http = require("http").createServer(app);
 const io = require("socket.io")(http, { cors: { origin: "*" } });
 
-// Serve the frontend HTML, CSS, and JS files from this directory
-app.use(express.static(__dirname));
+// Serve static files from the project root and all src/ subdirs.
+// index.html references all assets as flat filenames (style.css, rle.js, etc.)
+// so we expose each folder that contains those files.
+const path = require("path");
+const root = path.join(__dirname, "../../");
+
+app.use(express.static(root));                               // serves index.html
+app.use(express.static(path.join(root, "public")));          // serves style.css
+app.use(express.static(path.join(root, "src/compression"))); // serves rle.js, huffman.js
+app.use(express.static(path.join(root, "src/transport")));   // serves webrtc.js
+app.use(express.static(path.join(root, "src/ui")));          // serves script.js
 
 io.on("connection", (socket) => {
   console.log("🟢 User connected:", socket.id);
