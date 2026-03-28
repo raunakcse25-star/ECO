@@ -109,15 +109,29 @@ class HuffmanCoder {
     };
   }
 
+  // ── RECONSTRUCT TREE FROM PLAIN JSON ──
+  // When the tree travels over WebRTC as JSON it loses its HuffmanNode
+  // prototype. Rebuild it so .left/.right/.value work correctly.
+  static reviveTree(node) {
+    if (!node) return null;
+    const n = new HuffmanNode(node.value, node.freq);
+    n.left = this.reviveTree(node.left);
+    n.right = this.reviveTree(node.right);
+    return n;
+  }
+
   // ── DECODE REAL BYTES ──
   static decode(packedArray, bitLength, rootNode) {
     if (!rootNode || bitLength === 0) return new Uint8Array(0);
+
+    // BUG FIX: revive plain-object tree back into HuffmanNode instances
+    const root = this.reviveTree(rootNode);
 
     const packedBytes = new Uint8Array(packedArray);
     const bitString = this.unpackBits(packedBytes, bitLength);
 
     const decoded = [];
-    let current = rootNode;
+    let current = root; // BUG FIX: use revived HuffmanNode tree, not raw JSON
 
     // Walk the tree to reconstruct the original bytes
     for (let i = 0; i < bitString.length; i++) {
@@ -125,7 +139,7 @@ class HuffmanCoder {
 
       if (current.value !== null) {
         decoded.push(current.value);
-        current = rootNode; // Reset to root for next character
+        current = root; // Reset to revived root for next character
       }
     }
 

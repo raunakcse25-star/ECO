@@ -255,7 +255,10 @@ function jumpToConnect() {
 }
 
 function joinRoom(code) {
-  myRoom = code;
+  // BUG FIX: myRoom is declared in webrtc.js. Assigning here would create a
+  // local shadow variable. Instead, set it directly on the window scope so
+  // both files share the same reference.
+  window.myRoom = code;
   socket.emit("join-room", code);
   console.log("Joining room:", code);
 }
