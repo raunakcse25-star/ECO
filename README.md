@@ -1,14 +1,12 @@
 <div align="center">
 
 ```
-
-                               ███████╗ ██████╗ ██████╗
-                               ██╔════╝██╔════╝██╔═══██╗
-                               █████╗  ██║     ██║   ██║
-                               ██╔══╝  ██║     ██║   ██║
-                               ███████╗╚██████╗╚██████╔╝
-                               ╚══════╝ ╚═════╝ ╚═════╝
-
+███████╗ ██████╗ ██████╗
+██╔════╝██╔════╝██╔═══██╗
+█████╗  ██║     ██║   ██║
+██╔══╝  ██║     ██║   ██║
+███████╗╚██████╗╚██████╔╝
+╚══════╝ ╚═════╝ ╚═════╝
 ```
 
 **Efficient Compressed Operations**
@@ -185,14 +183,14 @@ A lightweight pre-pass that collapses consecutive repeated bytes into a count + 
 
 ---
 
-## Roadmap
+## Roadmap: What's Coming Up Next- 💻
 
-- [ ] Multi-file / folder transfer support
+- [ ] Drag-and-drop peer discovery on LAN — connect two devices on the same WiFi without any session code at all
 - [ ] LAN peer discovery (mDNS)
-- [ ] Transfer resume on connection drop
+- [ ] Transfer resume on disconnect — if WebRTC drops mid-transfer, reconnect and continue from where it stopped
 - [ ] Mobile PWA support
-- [ ] Progress visualization with live compression ratio display
-- [ ] Optional password-protected sessions
+- [ ] Clipboard transfer — paste text or images directly without selecting a file
+- [ ] Optional password- add an optional PIN so only the intended receiver can connect
 
 ---
 
